@@ -1,0 +1,62 @@
+"""Deploy The Dapp"""
+
+
+from typing import Dict, get_args
+from eth_account import Account
+from web3 import Web3
+from scripts.utils import get_account, get_contract
+from brownie import Contract, WolfToken, TokenFarm, config, network
+from brownie.network.transaction import TransactionReceipt
+
+KEPT_BALANCE = Web3.toWei(111, "ether")
+
+
+def deploy_farm_token():
+    """Deploy both the Token and the TokenFarm contracts."""
+    acc = get_account()
+    wolf_coin = WolfToken.deploy({"from": acc})
+    token_farm = TokenFarm.deploy(
+        wolf_coin.address,
+        {"from": acc},
+        publish_source=config["networks"][network.show_active()]["verify"],
+    )
+    tx = wolf_coin.transfer(
+        token_farm.address, wolf_coin.totalSupply() - KEPT_BALANCE, {"from": acc}
+    )
+    tx.wait(1)
+    weth_token = get_contract("weth")
+    fau_token = get_contract("fau")
+    allowed_token = {
+        wolf_coin: get_contract("dai_feed"),
+        fau_token: get_contract("dai_feed"),
+        weth_token: get_contract("eth_feed"),
+    }
+    token_farm = add_allowed_token(token_farm, allowed_token, acc)
+    return token_farm, wolf_coin
+
+
+def add_allowed_token(
+    token_farm: Contract, allowed_tokens: Dict, acc: Account
+) -> TransactionReceipt:
+    """Add token to list of allowed tokens.
+    Therefore an Aggregator to read the value of this token is neccessary.
+
+    Args:
+        token_farm (Contract): The contract of the tokenFarm
+        allowed_tokens (Dict): Dict of alreadt allowed tokens
+        acc (Account): Executing account
+
+    Returns:
+        TransactionReceipt: The transaction receipt
+    """
+    for token in allowed_tokens:
+        add_tx = token_farm.addAllowedToken(token.address, {"from": acc})
+        add_tx.wait(1)
+        set_tx = token_farm.setPriceFeedContract(token.address, allowed_tokens[token], {"from": acc})
+        set_tx.wait(1)
+    return token_farm
+
+
+def main():
+    """Main app."""
+    deploy_farm_token()
