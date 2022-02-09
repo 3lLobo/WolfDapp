@@ -1,6 +1,11 @@
 """Deploy The Dapp"""
 
 
+from importlib.abc import Loader
+import json
+import os
+import shutil
+import yaml
 from typing import Dict, get_args
 from eth_account import Account
 from web3 import Web3
@@ -32,6 +37,7 @@ def deploy_farm_token():
         weth_token: get_contract("eth_feed"),
     }
     token_farm = add_allowed_token(token_farm, allowed_token, acc)
+    update_UI()
     return token_farm, wolf_coin
 
 
@@ -52,9 +58,32 @@ def add_allowed_token(
     for token in allowed_tokens:
         add_tx = token_farm.addAllowedToken(token.address, {"from": acc})
         add_tx.wait(1)
-        set_tx = token_farm.setPriceFeedContract(token.address, allowed_tokens[token], {"from": acc})
+        set_tx = token_farm.setPriceFeedContract(
+            token.address, allowed_tokens[token], {"from": acc}
+        )
         set_tx.wait(1)
     return token_farm
+
+
+def update_UI():
+    """Send the brownie configurations to the forntend."""
+    copy_dir2UI("./build", './front_end/src/chain-info')
+    with open("brownie-config.yaml", "r") as f_yaml:
+        with open("./front_end/src/brownie-config.json", "w") as f_json:
+            json.dump(yaml.load(f_yaml, Loader=yaml.FullLoader), f_json)
+    print("Front-end up to date!")
+
+
+def copy_dir2UI(src: str, dest: str):
+    """Cope a folder to the front-end.
+
+    Args:
+        src (str): Source folder
+        dest (str): Destination folder path
+    """
+    if os.path.exists(dest):
+        shutil.rmtree(dest)
+    shutil.copytree(src, dest)
 
 
 def main():
