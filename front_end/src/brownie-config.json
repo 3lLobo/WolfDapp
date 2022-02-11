@@ -21,10 +21,6 @@
             "eth_feed": "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419",
             "verify": false
         },
-        "mainnet-fork": {
-            "eth_feed": "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419",
-            "verify": false
-        },
         "kovan": {
             "eth_feed": "0x9326BFA02ADD2366b30bacB125260Af641031331",
             "vrf": "0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9",
@@ -32,9 +28,9 @@
             "keyhash": "0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4",
             "fee": 1e17,
             "verify": true,
-            "fau": 1431271409251296647945815479863565974823054278966,
-            "weth": 923591861192668654182244460926914426239487352509,
-            "dai": 682099653397380029435145672900319792815929325402
+            "weth": "0x87b1f4cf9BD63f7BBD3eE1aD04E8F52540349347",
+            "fau": "0xFab46E002BbF0b4509813474841E0716E6730136",
+            "dai": "0x777A68032a88E5A84678A77Af2CD65A7b3c0775a"
         },
         "rinkeby": {
             "eth_feed": "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e",

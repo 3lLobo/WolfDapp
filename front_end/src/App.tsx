@@ -3,6 +3,8 @@ import "./App.css";
 import {
     DAppProvider,
     ChainId,
+    Kovan,
+    Rinkeby,
     useEtherBalance,
     useEthers,
     Config,
@@ -16,7 +18,7 @@ function App() {
     return (
         <DAppProvider
             config={{
-                supportedChains: [ChainId.Kovan, ChainId.Rinkeby],
+                networks: [Kovan, Rinkeby],
             }}
         >
             <Container maxWidth="md">
