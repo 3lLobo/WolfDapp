@@ -6,7 +6,9 @@ import helperConfig from "../helper-config.json";
 import brownieConfig from "../brownie-config.json";
 import networkMapping from "../chain-info/deployments/map.json";
 import { constants } from "ethers";
-import wlf from "../wlf.png";
+import wlf from "../res/wlf.png";
+import eth from "../res/eth.png";
+import dai from "../res/dai.png";
 import { YourWallet } from "./yourWallet";
 import { makeStyles } from "@material-ui/core";
 
@@ -27,16 +29,19 @@ const useStyles = makeStyles((theme) => ({
 export const Main = () => {
     const classes = useStyles();
     const { chainId } = useEthers();
-    console.log(chainId);
-    const strChainId: string = String(chainId);
-    const networkName = chainId ? helperConfig[chainId] : "dev";
-    const dappTokenAddress = constants.AddressZero;
-    chainId ? networkMapping[strChainId]["WolfCoin"][0] : constants.AddressZero;
+    const strChainId = String(chainId);
+    const networkName = chainId ? helperConfig[strChainId] : "dev";
+    console.log(networkName);
+    const dappTokenAddress = networkMapping["42"]["WolfToken"][0];
+
     const wethTokenAddress = chainId
         ? brownieConfig["networks"][networkName]["weth"]
         : constants.AddressZero;
     const fauTokenAddress = chainId
         ? brownieConfig["networks"][networkName]["fau"]
+        : constants.AddressZero;
+    const linkTokenAddress = chainId
+        ? brownieConfig["networks"][networkName]["link"]
         : constants.AddressZero;
 
     const supportedTokens: Array<Token> = [
@@ -46,14 +51,19 @@ export const Main = () => {
             name: "WLF",
         },
         {
-            image: wlf,
+            image: eth,
             address: wethTokenAddress,
             name: "WETH",
         },
         {
-            image: wlf,
+            image: dai,
             address: fauTokenAddress,
             name: "DAI",
+        },
+        {
+            image: wlf,
+            address: linkTokenAddress,
+            name: "LINK",
         },
     ];
 

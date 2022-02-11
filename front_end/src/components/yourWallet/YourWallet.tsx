@@ -2,6 +2,7 @@ import { Token } from "../Main";
 import React, { useState } from "react";
 import { Box, Tab, makeStyles } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { WalletBalance } from "./WalletBalance";
 
 interface YourWalletProps {
     supportedTokens: Array<Token>;
@@ -24,17 +25,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
-    const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0)
+    const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
     const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
-        setSelectedTokenIndex(parseInt(newValue))
-    }
-    const classes = useStyles()
+        setSelectedTokenIndex(parseInt(newValue));
+    };
+    const classes = useStyles();
     return (
         <Box>
             <h1 className={classes.header}> Your Wallet! </h1>
             <Box className={classes.box}>
                 <TabContext value={selectedTokenIndex.toString()}>
-                    <TabList onChange={handleChange} aria-label="stake from tabs">
+                    <TabList
+                        onChange={handleChange}
+                        aria-label="stake from tabs"
+                    >
                         {supportedTokens.map((token, index) => {
                             return (
                                 <Tab
@@ -48,7 +52,13 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
                     {supportedTokens.map((token, index) => {
                         return (
                             <TabPanel value={index.toString()} key={index}>
-                                <div>1, Wallet balance 2. stake button</div>
+                                <div>
+                                    <WalletBalance
+                                        token={
+                                            supportedTokens[selectedTokenIndex]
+                                        }
+                                    />
+                                </div>
                             </TabPanel>
                         );
                     })}
