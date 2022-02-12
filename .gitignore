@@ -6,7 +6,7 @@ __pycache__
 .hypothesis/
 build/
 reports/
-
+defi-stake-yield-brownie-freecode/
 
 # Logs
 logs
