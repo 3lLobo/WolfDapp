@@ -16,11 +16,11 @@ const useStyles = makeStyles((theme) => ({
         gap: theme.spacing(4),
     },
     box: {
-        backgroundColor: "white",
+        backgroundColor: "lightblue",
         borderRadius: "25px",
     },
     header: {
-        color: "white",
+        color: "black",
     },
 }));
 

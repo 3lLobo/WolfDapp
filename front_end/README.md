@@ -46,14 +46,3 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 
-## Notes on React JS
-
-To use an if statement:
-```js
-const var: number = var ? func(var) : 0
-```
-
-For a delacred box you import using this syntax:
-```js
-<Wallet token={ eth }></Wallet>
-```

@@ -3,8 +3,8 @@
 
 import { useEthers } from "@usedapp/core";
 import helperConfig from "../helper-config.json";
-import brownieConfig from "../brownie-config.json";
-import networkMapping from "../chain-info/deployments/map.json";
+import brownieConfig from "../brownie-config-json.json";
+import networkMapping from "../chain-info/map.json";
 import { constants } from "ethers";
 import wlf from "../res/wlf.png";
 import eth from "../res/eth.png";
@@ -20,7 +20,7 @@ export type Token = {
 
 const useStyles = makeStyles((theme) => ({
     title: {
-        color: theme.palette.common.white,
+        color: theme.palette.common.black,
         textAlign: "center",
         padding: theme.spacing(4),
     },
@@ -28,9 +28,9 @@ const useStyles = makeStyles((theme) => ({
 
 export const Main = () => {
     const classes = useStyles();
-    const { chainId } = useEthers();
-    const strChainId = String(chainId);
-    const networkName = chainId ? helperConfig[strChainId] : "dev";
+    // const { chainId } = useEthers();
+    const chainId = 42;
+    const networkName: string = chainId ? helperConfig[chainId] : "dev";
     console.log(networkName);
     const dappTokenAddress = networkMapping["42"]["WolfToken"][0];
 
