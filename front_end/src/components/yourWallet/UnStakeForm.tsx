@@ -1,33 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Token } from "../Main";
-import { useEthers, useTokenBalance, useNotifications } from "@usedapp/core";
-import { formatUnits } from "@ethersproject/units";
+import { useEthers, useNotifications } from "@usedapp/core";
 import {
     Button,
     Input,
     CircularProgress,
-    LinearProgress,
     Snackbar,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { BigNumber, utils } from "ethers";
-import { useStakeTokens } from "../../hooks/useStakeTokens";
+import { utils } from "ethers";
+import { useUnStake } from "../../hooks/useUnStake";
 
-export interface StakeFormProps {
+export interface UnStakeFormProps {
     token: Token;
 }
 
-export const StakeForm = ({ token }: StakeFormProps) => {
+export const UnStakeForm = ({ token }: UnStakeFormProps) => {
     const { address: tokenAddress, name } = token;
+    const { account } = useEthers()
     const { notifications } = useNotifications();
-    // const { account } = useEthers();
-    // const tokenBalance: BigNumber | undefined = useTokenBalance(
-    //     tokenAddress,
-    //     account
-    // );
-    // const formattedTokenBalance: number = tokenBalance
-    //     ? parseFloat(formatUnits(tokenBalance, 18))
-    //     : 0;
 
     const [amount, setAmount] = useState<
         number | string | Array<number | string>
@@ -38,13 +29,12 @@ export const StakeForm = ({ token }: StakeFormProps) => {
         setAmount(newAmount);
     };
 
-    const { approveAndStake, state: erc20State } = useStakeTokens(tokenAddress);
+    const { unStakeCall, state: unStakeState } = useUnStake(tokenAddress);
     const handleStakeSubmit = () => {
-        const amountAsWei = utils.parseEther(amount.toString());
-        return approveAndStake(amountAsWei.toString());
+        return unStakeCall(account);
     };
 
-    const isMining = erc20State.status === "Mining";
+    const isMining = unStakeState.status === "Mining";
     const [showERC20Success, setShowERC20Success] = useState(false);
     const [showStakeSuccess, setShowStakeSuccess] = useState(false);
     const handleCloseSnack = () => {

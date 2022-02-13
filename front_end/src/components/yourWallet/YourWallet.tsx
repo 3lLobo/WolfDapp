@@ -2,7 +2,10 @@ import { Token } from "../Main";
 import React, { useState } from "react";
 import { Box, Tab, makeStyles } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+
 import { WalletBalance } from "./WalletBalance";
+import { WalletStake } from "./WalletStake"
+import { StakeForm } from "./StakeForm";
 
 interface YourWalletProps {
     supportedTokens: Array<Token>;
@@ -17,10 +20,10 @@ const useStyles = makeStyles((theme) => ({
     },
     box: {
         backgroundColor: "lightblue",
-        borderRadius: "25px",
+        borderRadius: "33px",
     },
     header: {
-        color: "black",
+        color: "lightblue",
     },
 }));
 
@@ -52,8 +55,17 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
                     {supportedTokens.map((token, index) => {
                         return (
                             <TabPanel value={index.toString()} key={index}>
-                                <div>
+                                <div className={classes.tabContent}>
                                     <WalletBalance
+                                        token={
+                                            supportedTokens[selectedTokenIndex]
+                                        }
+                                    />
+                                    <WalletStake token={
+                                            supportedTokens[selectedTokenIndex]
+                                        }
+                                    />
+                                    <StakeForm
                                         token={
                                             supportedTokens[selectedTokenIndex]
                                         }

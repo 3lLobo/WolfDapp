@@ -20,7 +20,7 @@ export type Token = {
 
 const useStyles = makeStyles((theme) => ({
     title: {
-        color: theme.palette.common.black,
+        color: theme.palette.common.white,
         textAlign: "center",
         padding: theme.spacing(4),
     },
@@ -33,15 +33,16 @@ export const Main = () => {
     const networkName: string = chainId ? helperConfig[chainId] : "dev";
     console.log(networkName);
     const dappTokenAddress = networkMapping["42"]["WolfToken"][0];
+    const netConfig: { [key: string]: any } = brownieConfig;
 
     const wethTokenAddress = chainId
-        ? brownieConfig["networks"][networkName]["weth"]
+        ? netConfig["networks"][networkName]["weth"]
         : constants.AddressZero;
     const fauTokenAddress = chainId
-        ? brownieConfig["networks"][networkName]["fau"]
+        ? netConfig["networks"][networkName]["fau"]
         : constants.AddressZero;
     const linkTokenAddress = chainId
-        ? brownieConfig["networks"][networkName]["link"]
+        ? netConfig["networks"][networkName]["link"]
         : constants.AddressZero;
 
     const supportedTokens: Array<Token> = [
@@ -69,7 +70,7 @@ export const Main = () => {
 
     return (
         <>
-            <h2 className={classes.title}>Dapp Token App</h2>
+            <h2 className={classes.title}>Wolf Token App</h2>
             <YourWallet supportedTokens={supportedTokens} />
         </>
     );

@@ -14,15 +14,20 @@ import { Header } from "./components/Header";
 import { Container } from "@material-ui/core";
 import { Main } from "./components/Main";
 
+const heart: string = "<3";
 function App() {
     return (
         <DAppProvider
             config={{
-                networks: [Kovan, Rinkeby],
+                networks: [Kovan],
+                notifications: {
+                    expirationPeriod: 1000,
+                    checkInterval: 1000,
+                },
             }}
         >
             <Container maxWidth="md">
-                <div>AloHa</div>
+                <div> {heart} </div>
             </Container>
             <Header></Header>
             <Container maxWidth="md">
