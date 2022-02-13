@@ -1,6 +1,23 @@
 # Wolf Decentralized App
 
-## Insights:
+## Run the wolf-dapp
+If you really want to run this useless but funney app, do thiz:
+```bash
+cd front-end
+yarn
+yarn start
+```
+A browser window will pop up and you can connect with MetaMask. This dapp only works on the Kovan test-chain.
+
+Ofc, if you don't have yarn installed yet, you should do so! Dhis will do the magic:
+```bash
+npm install --global yarn
+```
+
+If you're mssing npm, you're lost. Jk, here's a link how-to install [`npm` & `node.js`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+
+
+## My Personal Insights:
 
 1. to transfer a tokens from within a contract, declare the toeken with the ERC20 interface, then call transfer on it:
 
