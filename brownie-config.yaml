@@ -9,41 +9,43 @@ dependencies:
 compiler:
   solc:
     remappings:
-      - '@chainlink=smartcontractkit/chainlink-brownie-contracts@0.3.1'
-      - '@chainlink-mix=smartcontractkit/chainlink-mix@2.3.0'
-      - '@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.4.1'
+      - "@chainlink=smartcontractkit/chainlink-brownie-contracts@0.3.1"
+      - "@chainlink-mix=smartcontractkit/chainlink-mix@2.3.0"
+      - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.4.1"
 
 wallets:
   from_key: ${PRIV_KEY}
 
 networks:
   default: development
-  dev-fork: 
-    eth_feed: '0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419'
+  dev-fork:
+    eth_feed: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
     verify: False
-  mainnet-fork: 
-    eth_feed: '0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419'
+  mainnet-fork:
+    eth_feed: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
     verify: False
-  kovan: 
-    eth_feed: '0x9326BFA02ADD2366b30bacB125260Af641031331'
-    vrf: '0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9'
-    link: '0xa36085F69e2889c224210F603D836748e7dC0088'
-    keyhash: '0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4'
+  kovan:
+    eth_feed: "0x9326BFA02ADD2366b30bacB125260Af641031331"
+    link_feed: "0x396c5E36DD0a0F5a5D33dae44368D4193f69a1F0"
+    dai_feed: "0x777A68032a88E5A84678A77Af2CD65A7b3c0775a"
+    vrf: "0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9"
+    link: "0xa36085F69e2889c224210F603D836748e7dC0088"
+    keyhash: "0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4"
     fee: &link_fee 1.0e+17
     verify: True
-    fau: 0xFab46E002BbF0b4509813474841E0716E6730136
-    weth: 0xa1c74a9a3e59ffe9bee7b85cd6e91c0751289ebd
-    dai: 0x777A68032a88E5A84678A77Af2CD65A7b3c0775a
+    fau: "0xFab46E002BbF0b4509813474841E0716E6730136"
+    weth: "0xa1c74a9a3e59ffe9bee7b85cd6e91c0751289ebd"
+    dai: "0x777A68032a88E5A84678A77Af2CD65A7b3c0775a"
   rinkeby:
-    eth_feed: '0x8A753747A1Fa494EC906cE90E9f37563A8AF630e'
-    vrf: '0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B'
-    link: '0x01BE23585060835E02B77ef475b0Cc51aA1e0709'
-    keyhash: '0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311'
+    eth_feed: "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e"
+    vrf: "0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B"
+    link: "0x01BE23585060835E02B77ef475b0Cc51aA1e0709"
+    keyhash: "0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311"
     fee: *link_fee
     verify: True
   development:
-    keyhash: '0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311'
+    keyhash: "0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311"
     fee: *link_fee
     verify: False
   ganachewin11:
-    verify: False 
+    verify: False

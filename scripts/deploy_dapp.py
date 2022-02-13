@@ -12,6 +12,7 @@ from web3 import Web3
 from scripts.utils import get_account, get_contract
 from brownie import Contract, WolfToken, TokenFarm, config, network
 from brownie.network.transaction import TransactionReceipt
+from scripts.update_frontend import update_front_end
 
 KEPT_BALANCE = Web3.toWei(111, "ether")
 
@@ -19,25 +20,33 @@ KEPT_BALANCE = Web3.toWei(111, "ether")
 def deploy_farm_token():
     """Deploy both the Token and the TokenFarm contracts."""
     acc = get_account()
-    wolf_coin = WolfToken.deploy({"from": acc})
-    token_farm = TokenFarm.deploy(
-        wolf_coin.address,
-        {"from": acc},
-        publish_source=config["networks"][network.show_active()]["verify"],
-    )
-    tx = wolf_coin.transfer(
-        token_farm.address, wolf_coin.totalSupply() - KEPT_BALANCE, {"from": acc}
-    )
-    tx.wait(1)
+    if network.show_active() == "kovan":
+        print("Contracts already deployed on {}!".format(network.show_active()))
+        wolf_coin = WolfToken[-1]
+        token_farm = TokenFarm[-1]
+    else:
+        wolf_coin = WolfToken.deploy({"from": acc})
+        token_farm = TokenFarm.deploy(
+            wolf_coin.address,
+            {"from": acc},
+            publish_source=config["networks"][network.show_active()]["verify"],
+        )
+        tx = wolf_coin.transfer(
+            token_farm.address, wolf_coin.totalSupply() - KEPT_BALANCE, {"from": acc}
+        )
+        tx.wait(1)
     weth_token = get_contract("weth")
     fau_token = get_contract("fau")
+    link_token = get_contract("link")
     allowed_token = {
         wolf_coin: get_contract("dai_feed"),
         fau_token: get_contract("dai_feed"),
         weth_token: get_contract("eth_feed"),
+        link_token: get_contract("link"),
     }
     token_farm = add_allowed_token(token_farm, allowed_token, acc)
-    update_UI()
+    update_front_end()
+
     return token_farm, wolf_coin
 
 
@@ -65,25 +74,25 @@ def add_allowed_token(
     return token_farm
 
 
-def update_UI():
-    """Send the brownie configurations to the forntend."""
-    copy_dir2UI("./build", './front_end/src/chain-info')
-    with open("brownie-config.yaml", "r") as f_yaml:
-        with open("./front_end/src/brownie-config.json", "w") as f_json:
-            json.dump(yaml.load(f_yaml, Loader=yaml.FullLoader), f_json)
-    print("Front-end up to date!")
+# def update_UI():
+#     """Send the brownie configurations to the forntend."""
+#     copy_dir2UI("./build", './front_end/src/chain-info')
+#     with open("brownie-config.yaml", "r") as f_yaml:
+#         with open("./front_end/src/brownie-config.json", "w") as f_json:
+#             json.dump(yaml.load(f_yaml, Loader=yaml.FullLoader), f_json)
+#     print("Front-end up to date!")
 
 
-def copy_dir2UI(src: str, dest: str):
-    """Cope a folder to the front-end.
+# def copy_dir2UI(src: str, dest: str):
+#     """Cope a folder to the front-end.
 
-    Args:
-        src (str): Source folder
-        dest (str): Destination folder path
-    """
-    if os.path.exists(dest):
-        shutil.rmtree(dest)
-    shutil.copytree(src, dest)
+#     Args:
+#         src (str): Source folder
+#         dest (str): Destination folder path
+#     """
+#     if os.path.exists(dest):
+#         shutil.rmtree(dest)
+#     shutil.copytree(src, dest)
 
 
 def main():

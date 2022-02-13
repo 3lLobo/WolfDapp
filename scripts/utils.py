@@ -8,7 +8,7 @@ from brownie import (
     MockDAI,
     MockWETH,
     # VRFCoordinatorMock,
-    # LinkToken,
+    LinkToken,
     # AdvancedNFT,
     ETH_ADDRESS,
     accounts,
@@ -17,7 +17,7 @@ from brownie import (
     config,
     Contract,
 )
-from brownie.network.contract import ProjectContract, ContractTx
+from brownie.network.contract import ProjectContract, ContractTx, ContractContainer
 from brownie.network.transaction import TransactionReceipt
 from eth_account import Account
 from eth_typing import Address
@@ -34,8 +34,10 @@ FORKED_LOCAL_CHAIN = ["mainnet-fork", "dev-fork"]
 c_map = {
     "eth_feed": MockV3Aggregator,
     "dai_feed": MockV3Aggregator,
+    "link_feed": MockV3Aggregator,
     "fau": MockDAI,
     "weth": MockWETH,
+    "link": LinkToken,
 }
 
 
@@ -63,7 +65,7 @@ def get_account(acc_idx: int = 0, brownie_id: int = None) -> str:
 
 def get_contract(c_name: string) -> ProjectContract:
     """Returs the contract defined in brownie config.
-    If no contract is defined, a moch version is deployed.
+    If no contract is defined, a mock version is deployed.
 
     Args:
         c_name (string): contract name
@@ -81,25 +83,57 @@ def get_contract(c_name: string) -> ProjectContract:
             deploy_mocks()
         contract = c_type[-1]
     else:
-        c_address = config["networks"][net][c_name]
-        contract = Contract.from_abi(c_type._name, c_address, c_type.abi)
-
+        try:
+            c_address = config["networks"][network.show_active()][c_name]
+            contract = Contract.from_abi(c_type._name, c_address, c_type.abi)
+        except KeyError:
+            print(
+                f"{network.show_active()} address not found, add it to the config or deploy mocks!",
+                f"brownie run scripts/deploy_mocks.py --network {network.show_active()}",
+            )
     return contract
 
 
-def deploy_mocks():
-    """Deploy MockV3Aggregator"""
-    acc = get_account()
-    MockV3Aggregator.deploy(DECIMALS, START_PRICE, {"from": acc})
-    print("Deployed MockV3Agg!")
-    # link_mock = LinkToken.deploy({"from": acc})
-    # print("Deployed LinkMock!")
-    # vrf = (VRFCoordinatorMock.deploy(link_mock.address, {"from": acc}),)
-    # print("Deployed VRF!")
-    MockDAI.deploy({"from": acc})
-    MockWETH.deploy({"from": acc})
-    # fund_link(vrf, acc, link_mock)
-    # print("Funded VRF1")
+def deploy_mocks(decimals=DECIMALS, initial_value=START_PRICE):
+    """
+    Use this script if you want to deploy mocks to a testnet
+    """
+    print(f"The active network is {network.show_active()}")
+    print("Deploying Mocks...")
+    account = get_account()
+    print("Deploying Mock Link Token...")
+    link_token = LinkToken.deploy({"from": account})
+    print("Deploying Mock Price Feed...")
+    mock_price_feed = MockV3Aggregator.deploy(
+        decimals, initial_value, {"from": account}
+    )
+    print(f"Deployed to {mock_price_feed.address}")
+    print("Deploying Mock DAI...")
+    dai_token = MockDAI.deploy({"from": account})
+    print(f"Deployed to {dai_token.address}")
+    print("Deploying Mock WETH")
+    weth_token = MockWETH.deploy({"from": account})
+    print(f"Deployed to {weth_token.address}")
+
+
+# We didn't have this in the video, but it's a helpful script to have you issue the tokens!
+def issue_tokens():
+    """You can call this function once you have deployed your TokenFarm contract to a live network
+    and have users that have staked tokens.
+
+    Note that it relies on get_contract, so be mindful to correctly configure your Token Farm contract
+    into brownie-config.yaml as well as the contract_to_mock dict as described in the get_contract docstring
+    Run this function with this command: `brownie run scripts/issue_tokens.py --network kovan`
+        This function will:
+            - Print your account address and deployed TokenFarm contract address to confirm that you're using the right ones
+            - Call issueTokens on your deployed TokenFarm contract to issue the DAPP token reward to your users
+    """
+    account = get_account()
+    print(f"Issue Tokens called by: {account}")
+    token_farm = get_contract("TokenFarm")
+    print(f"TokenFarm contract called to issue tokens: {token_farm}")
+    tx = token_farm.issueTokens({"from": account})
+    tx.wait(1)
 
 
 def fund_link(
@@ -151,7 +185,7 @@ def upgrade_contract(
     new_address: Address,
     proxy_admin_contract: Contract = None,
     initializer: ContractTx = None,
-    *args
+    *args,
 ) -> TransactionReceipt:
     """Uprage a contract trough its proxy.
 
