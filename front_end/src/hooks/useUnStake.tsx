@@ -9,7 +9,7 @@ import { Contract } from "@ethersproject/contracts";
 import { useState, useEffect } from "react";
 
 export const useUnStake = (tokenAddress: string) => {
-    const { account } = useEthers()
+    const { account } = useEthers();
     const chainId = 42;
     const { abi } = TokenFarm;
     const tokenFarmAddress = chainId
@@ -21,27 +21,23 @@ export const useUnStake = (tokenAddress: string) => {
         tokenFarmInterface
     );
 
-    const erc20ABI = ERC20.abi
-    const erc20Interface = new utils.Interface(erc20ABI)
-    const erc20Contract = new Contract(tokenAddress, erc20Interface)
-    // approve
-    // const { send: approveErc20Send, state: approveAndStakeErc20State } =
-    //     useContractFunction(erc20Contract, "approve", {
-    //         transactionName: "Approve ERC20 transfer",
-    //     })
+    const erc20ABI = ERC20.abi;
+    const erc20Interface = new utils.Interface(erc20ABI);
+    const erc20Contract = new Contract(tokenAddress, erc20Interface);
 
-    // stake
-    const { send: unStake, state: unStakeState } =
-        useContractFunction(tokenFarmContract, "unstakeTokens", {
+    // unstake
+    const { send: unStake, state: unStakeState } = useContractFunction(
+        tokenFarmContract,
+        "unstakeTokens",
+        {
             transactionName: "Stake Tokens",
-        })
+        }
+    );
 
-    const unStakeCall = (token) => {
-        unStake(token)
-        return unStakeState
-    }
-
-    const [amount2Stake, setAmount2Stake] = useState("0");
+    const unStakeCall = (token: string) => {
+        unStake(token);
+        return unStakeState;
+    };
 
     return { unStakeCall, unStakeState };
 };

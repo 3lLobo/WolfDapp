@@ -4,8 +4,9 @@ import { Box, Tab, makeStyles } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 
 import { WalletBalance } from "./WalletBalance";
-import { WalletStake } from "./WalletStake"
+import { WalletStake } from "./WalletStake";
 import { StakeForm } from "./StakeForm";
+import { UnStakeForm } from "./UnStakeForm";
 
 interface YourWalletProps {
     supportedTokens: Array<Token>;
@@ -61,11 +62,17 @@ export const YourWallet = ({ supportedTokens }: YourWalletProps) => {
                                             supportedTokens[selectedTokenIndex]
                                         }
                                     />
-                                    <WalletStake token={
+                                    <WalletStake
+                                        token={
                                             supportedTokens[selectedTokenIndex]
                                         }
                                     />
                                     <StakeForm
+                                        token={
+                                            supportedTokens[selectedTokenIndex]
+                                        }
+                                    />
+                                    <UnStakeForm
                                         token={
                                             supportedTokens[selectedTokenIndex]
                                         }
